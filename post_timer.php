@@ -17,7 +17,7 @@ if (! defined('ABSPATH')) {
 	die;
 }
 
-define("ADDWEBPT_PLUGIN_VERSION", 4.0);
+define("ADDWEBPT_PLUGIN_VERSION", 5.0);
 define("ADDWEBPT_PLUGIN_DIR", plugin_dir_path(__FILE__));
 define("ADDWEBPT_PLUGIN_URL", plugins_url('/', __FILE__));
 define("ADDWEBPT_TEXT_DOMAIN", "post-timer");
