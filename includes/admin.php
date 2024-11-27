@@ -75,10 +75,10 @@ dashicons-clock');
   {
     wp_enqueue_style('wp-color-picker');
     wp_enqueue_style(ADDWEBPT_TEXT_DOMAIN . '-style', ADDWEBPT_PLUGIN_URL . '/assets/css/post-timer-popup.css', array(), ADDWEBPT_PLUGIN_VERSION);
-    wp_enqueue_script(ADDWEBPT_TEXT_DOMAIN . '-admin-script', ADDWEBPT_PLUGIN_URL . '/assets/js/admin.js', array('jquery', 'wp-color-picker'), ADDWEBPT_PLUGIN_VERSION);
+    wp_enqueue_script(ADDWEBPT_TEXT_DOMAIN . '-admin-script', ADDWEBPT_PLUGIN_URL . '/assets/js/admin.js', array('jquery', 'wp-color-picker'), ADDWEBPT_PLUGIN_VERSION, false);
     wp_enqueue_media();
     wp_enqueue_script('jquery-ui-tabs');
-    wp_enqueue_style(ADDWEBPT_TEXT_DOMAIN . 'jquery-ui-css', ADDWEBPT_PLUGIN_URL . '/assets/css/jquery-ui.min.css', array(), ADDWEBPT_PLUGIN_VERSION);
+    wp_enqueue_style(ADDWEBPT_TEXT_DOMAIN . 'jquery-ui-css', ADDWEBPT_PLUGIN_URL . '/assets/css/jquery-ui.min.css', array(), ADDWEBPT_PLUGIN_VERSION, false);
   }
 
   /**

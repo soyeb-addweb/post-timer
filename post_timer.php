@@ -4,7 +4,7 @@
  * Plugin Name: Post Timer
  * Plugin URI: http://www.addwebsolution.com
  * Description: It displays countdown timer in popup when user add/edit posts, pages or custom post. Go to your Post Timer settings page, and change popup theme/position as per your requirement.
- * Version: 4.0
+ * Version: 5.0
  * Author: AddWeb Solution
  * Author URI: http://www.addwebsolution.com
  * License: GPL-2.0+

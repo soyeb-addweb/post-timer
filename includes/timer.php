@@ -72,26 +72,67 @@ class ADDWEBPT_TIMER
 
   public function addweb_pt_get_timer_popup()
   {
+    // $addweb_pt_popup_html  = '<div class="addweb-pt-timer-popup" onclick="start();">';
+    // $addweb_pt_popup_html .= '<div class="popup-wrap">';
+    // if ($this->options['addweb_pt_popup_place'] != 'top-left' && $this->options['addweb_pt_popup_place'] != 'top-right') {
+    //   $addweb_pt_popup_html .= '<div class="popup-header">';
+    //   $addweb_pt_popup_html .= '<span class="popup-title" id="timer-clock">';
+
+    //   $addweb_pt_popup_html .= '</span>';
+    //   $addweb_pt_popup_html .= '</div>';
+    // }
+
+    // if ($this->options['addweb_pt_popup_place'] == 'top-left' || $this->options['addweb_pt_popup_place'] == 'top-right') {
+    //   $addweb_pt_popup_html .= '<div class="popup-header">';
+    //   $addweb_pt_popup_html .= '<span class="popup-title" id="timer-clock">';
+
+    //   $addweb_pt_popup_html .= '</span>';
+    //   $addweb_pt_popup_html .= '</div>';
+    // }
+    // $addweb_pt_popup_html .= '</div>';
+    // $addweb_pt_popup_html .= '</div>';
+
+    // echo $addweb_pt_popup_html;
+
+    // Ensure options are set and valid.
+    if (empty($this->options) || !isset($this->options['addweb_pt_popup_place'])) {
+      return; // Prevent execution if options are missing.
+    }
+
+    // Initialize the popup HTML.
     $addweb_pt_popup_html  = '<div class="addweb-pt-timer-popup" onclick="start();">';
     $addweb_pt_popup_html .= '<div class="popup-wrap">';
-    if ($this->options['addweb_pt_popup_place'] != 'top-left' && $this->options['addweb_pt_popup_place'] != 'top-right') {
-      $addweb_pt_popup_html .= '<div class="popup-header">';
-      $addweb_pt_popup_html .= '<span class="popup-title" id="timer-clock">';
 
-      $addweb_pt_popup_html .= '</span>';
-      $addweb_pt_popup_html .= '</div>';
-    }
-
+    // Determine the placement of the popup header.
     if ($this->options['addweb_pt_popup_place'] == 'top-left' || $this->options['addweb_pt_popup_place'] == 'top-right') {
       $addweb_pt_popup_html .= '<div class="popup-header">';
-      $addweb_pt_popup_html .= '<span class="popup-title" id="timer-clock">';
-
-      $addweb_pt_popup_html .= '</span>';
+      $addweb_pt_popup_html .= '<span class="popup-title" id="timer-clock"></span>';
+      $addweb_pt_popup_html .= '</div>';
+    } else {
+      $addweb_pt_popup_html .= '<div class="popup-header">';
+      $addweb_pt_popup_html .= '<span class="popup-title" id="timer-clock"></span>';
       $addweb_pt_popup_html .= '</div>';
     }
+
+    // Close the wrap and main div.
     $addweb_pt_popup_html .= '</div>';
     $addweb_pt_popup_html .= '</div>';
-    echo $addweb_pt_popup_html;
+
+    $allowed_html = array(
+      'div' => array(
+        'class' => array(),
+        'onclick' => array(),
+      ),
+      'span' => array(
+        'class' => array(),
+        'id' => array(),
+      ),
+    );
+
+    // Safely output the HTML.
+    echo wp_kses($addweb_pt_popup_html, $allowed_html);
+
+
 
     if (empty($this->post_related_data['addweb_pt_query_string']) || $this->post_related_data['addweb_pt_url_page'] == 'post-new.php' || ($this->post_related_data['addweb_pt_url_page'] == 'post.php' && $this->post_related_data['addweb_pt_action_query'] == 'edit')) {
 ?><script>
@@ -299,7 +340,7 @@ class ADDWEBPT_TIMER
       .addweb-pt-timer-popup .popup-header {
         <?php
               if ($this->options['addweb_pt_popup_color'] != '') {
-        ?>background-color: <?php echo $this->options['addweb_pt_popup_color']; ?>;
+        ?>background-color: <?php echo esc_attr($this->options['addweb_pt_popup_color']); ?>;
         <?php
               } else {
         ?>background-color: #2C5A85;
@@ -314,7 +355,7 @@ class ADDWEBPT_TIMER
       .addweb-pt-timer-popup-left {
         <?php
                 if ($this->options['addweb_pt_popup_top_margin'] != '') {
-        ?>top: <?php echo $this->options['addweb_pt_popup_top_margin']; ?>%;
+        ?>top: <?php echo esc_attr($this->options['addweb_pt_popup_top_margin']); ?>%;
         <?php
                 } else {
         ?>top: 25%;
@@ -332,7 +373,7 @@ class ADDWEBPT_TIMER
              */
             public function addweb_pt_enqueue_scripts()
             {
-              wp_enqueue_script(ADDWEBPT_TEXT_DOMAIN . '-modernizr-script', ADDWEBPT_PLUGIN_URL . '/assets/js/modernizr.custom.js', array(), ADDWEBPT_PLUGIN_VERSION);
+              wp_enqueue_script(ADDWEBPT_TEXT_DOMAIN . '-modernizr-script', ADDWEBPT_PLUGIN_URL . '/assets/js/modernizr.custom.js', array(), ADDWEBPT_PLUGIN_VERSION, 'false');
             }
             /*
   public function addweb_pt_get_post_page_related_data() {
@@ -368,22 +409,27 @@ class ADDWEBPT_TIMER
             // modified and optimize the aboce function
             public function addweb_pt_get_post_page_related_data()
             {
-              $addweb_pt_url = $_SERVER['REQUEST_URI'];
+              if (isset($_SERVER['REQUEST_URI'])) {
+                $addweb_pt_url = sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI']));
+              } else {
+                $addweb_pt_url = '';
+              }
+
 
               $data = []; // Initialize $data to avoid potential undefined index notices.
 
               // Parse URL components.
-              $gets = parse_url($addweb_pt_url);
+              $gets = wp_parse_url($addweb_pt_url);
 
               // Handle query string parameters.
               if (isset($_GET['post_type'])) {
-                $data['addweb_pt_query_string'] = $_GET['post_type'];
+                $data['addweb_pt_query_string'] = sanitize_text_field(wp_unslash($_GET['post_type']));
               }
               if (isset($_GET['action'])) {
-                $data['addweb_pt_action_query'] = $_GET['action'];
+                $data['addweb_pt_action_query'] = sanitize_text_field(wp_unslash($_GET['action']));
               }
               if (isset($_GET['post'])) {
-                $data['addweb_post_type'] = get_post_type($_GET['post']);
+                $data['addweb_post_type'] = get_post_type(sanitize_text_field(wp_unslash($_GET['post'])));
               }
 
               // Handle the path and query.
